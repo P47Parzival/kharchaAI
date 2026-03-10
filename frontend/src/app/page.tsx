@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="min-h-screen flex flex-col bg-[var(--bg-primary)] overflow-hidden relative">
+    <div className="min-h-screen flex flex-col bg-(--bg-primary) overflow-hidden relative">
       {/* Background ambient glow */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-[-20%] left-[30%] w-[600px] h-[600px] rounded-full bg-[rgba(108,92,231,0.08)] blur-[120px]" />
@@ -14,16 +14,16 @@ export default function Home() {
       {/* ─── Navbar ─── */}
       <nav className="relative z-10 w-full px-6 py-4 flex items-center justify-between max-w-7xl mx-auto">
         <div className="flex items-center gap-2">
-          <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#6c5ce7] to-[#a78bfa] flex items-center justify-center text-white font-bold text-lg shadow-lg">
+          <div className="w-9 h-9 rounded-lg bg-linear-to-br from-[#6c5ce7] to-[#a78bfa] flex items-center justify-center text-white font-bold text-lg shadow-lg">
             K
           </div>
-          <span className="text-xl font-bold text-[var(--text-primary)]">
+          <span className="text-xl font-bold text-(--text-primary)">
             Kharcha<span className="gradient-text">AI</span>
           </span>
         </div>
         <Link
           href="/chat"
-          className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#6c5ce7] to-[#a78bfa] text-white text-sm font-semibold transition-all hover:shadow-lg hover:shadow-[rgba(108,92,231,0.3)] hover:scale-105 active:scale-95"
+          className="px-5 py-2.5 rounded-xl bg-linear-to-r from-[#6c5ce7] to-[#a78bfa] text-white text-sm font-semibold transition-all hover:shadow-lg hover:shadow-[rgba(108,92,231,0.3)] hover:scale-105 active:scale-95"
         >
           Start Chatting
         </Link>
@@ -35,8 +35,8 @@ export default function Home() {
           className="animate-slide-up"
           style={{ animationDelay: "0.1s", opacity: 0 }}
         >
-          <div className="inline-block mb-6 px-4 py-1.5 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-card)] text-sm text-[var(--text-secondary)]">
-            ✨ Real-time pricing from DigiKey, Mouser, Amazon & more
+          <div className="inline-block mb-6 px-4 py-1.5 rounded-full border border-(--border-subtle) bg-(--bg-card) text-sm text-(--text-secondary)">
+            ✨ Real-time pricing from DigiKey, Mouser, Amazon &amp; more
           </div>
         </div>
 
@@ -51,7 +51,7 @@ export default function Home() {
         </h1>
 
         <p
-          className="text-lg md:text-xl text-[var(--text-secondary)] max-w-2xl mb-10 leading-relaxed animate-slide-up"
+          className="text-lg md:text-xl text-(--text-secondary) max-w-2xl mb-10 leading-relaxed animate-slide-up"
           style={{ animationDelay: "0.3s", opacity: 0 }}
         >
           Stop guessing. KharchaAI uses AI reasoning to identify every component
@@ -65,7 +65,7 @@ export default function Home() {
         >
           <Link
             href="/chat"
-            className="px-8 py-4 rounded-2xl bg-gradient-to-r from-[#6c5ce7] to-[#a78bfa] text-white text-lg font-semibold transition-all hover:shadow-xl hover:shadow-[rgba(108,92,231,0.3)] hover:scale-105 active:scale-95 animate-pulse-glow"
+            className="px-8 py-4 rounded-2xl bg-linear-to-r from-[#6c5ce7] to-[#a78bfa] text-white text-lg font-semibold transition-all hover:shadow-xl hover:shadow-[rgba(108,92,231,0.3)] hover:scale-105 active:scale-95 animate-pulse-glow"
           >
             Estimate My Project →
           </Link>
@@ -80,31 +80,31 @@ export default function Home() {
             <div className="w-3 h-3 rounded-full bg-[#ef4444]" />
             <div className="w-3 h-3 rounded-full bg-[#f59e0b]" />
             <div className="w-3 h-3 rounded-full bg-[#10b981]" />
-            <span className="ml-2 text-xs text-[var(--text-muted)]">
+            <span className="ml-2 text-xs text-(--text-muted)">
               KharchaAI Chat
             </span>
           </div>
           <div className="space-y-3 text-sm">
-            <div className="text-[var(--text-muted)]">
-              <span className="text-[var(--accent-secondary)]">you:</span> I
+            <div className="text-(--text-muted)">
+              <span className="text-(--accent-secondary)">you:</span> I
               want to build a 4-channel EEG device for brain-computer interface
               research
             </div>
-            <div className="text-[var(--text-secondary)]">
-              <span className="text-[var(--success)]">KharchaAI:</span> Here's
+            <div className="text-(--text-secondary)">
+              <span className="text-(--success)">KharchaAI:</span> Here&apos;s
               your complete BOM with live pricing...
             </div>
-            <div className="bg-[var(--bg-input)] rounded-lg p-3 text-xs font-mono">
-              <div className="text-[var(--accent-secondary)]">
+            <div className="bg-(--bg-input) rounded-lg p-3 text-xs font-mono">
+              <div className="text-(--accent-secondary)">
                 ┌ ADS1299 EEG AFE ────── $45.20 (DigiKey)
               </div>
-              <div className="text-[var(--text-secondary)]">
+              <div className="text-(--text-secondary)">
                 ├ Ag/AgCl Electrodes ─── $12.50 (Mouser)
               </div>
-              <div className="text-[var(--text-secondary)]">
+              <div className="text-(--text-secondary)">
                 ├ ESP32-S3 DevKit ────── $8.99 (Amazon)
               </div>
-              <div className="text-[var(--text-muted)]">
+              <div className="text-(--text-muted)">
                 └ Total Estimate: $89.40 - $124.80
               </div>
             </div>
@@ -137,10 +137,10 @@ export default function Home() {
               className="glass-card p-6 hover:border-[rgba(108,92,231,0.4)] transition-all duration-300 hover:translate-y-[-4px] cursor-default"
             >
               <div className="text-4xl mb-4">{card.icon}</div>
-              <h3 className="text-lg font-bold mb-2 text-[var(--text-primary)]">
+              <h3 className="text-lg font-bold mb-2 text-(--text-primary)">
                 {card.title}
               </h3>
-              <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+              <p className="text-sm text-(--text-secondary) leading-relaxed">
                 {card.desc}
               </p>
             </div>
@@ -149,7 +149,7 @@ export default function Home() {
       </section>
 
       {/* ─── Footer ─── */}
-      <footer className="relative z-10 py-8 text-center text-sm text-[var(--text-muted)] border-t border-[var(--border-subtle)]">
+      <footer className="relative z-10 py-8 text-center text-sm text-(--text-muted) border-t border-(--border-subtle)">
         Built with ❤️ by KharchaAI &middot; Accurate pricing for builders worldwide
       </footer>
     </div>

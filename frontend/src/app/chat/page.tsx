@@ -115,7 +115,7 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="flex h-screen bg-[var(--bg-primary)]">
+    <div className="flex h-screen bg-(--bg-primary)">
       {/* Sidebar */}
       {sidebarOpen && (
         <Sidebar
@@ -129,10 +129,10 @@ export default function ChatPage() {
       {/* Main Chat Area */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top bar */}
-        <header className="h-14 flex items-center px-4 border-b border-[var(--border-subtle)] bg-[var(--bg-secondary)]">
+        <header className="h-14 flex items-center px-4 border-b border-(--border-subtle) bg-(--bg-secondary)">
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="p-2 rounded-lg hover:bg-[var(--bg-card)] transition-colors text-[var(--text-secondary)]"
+            className="p-2 rounded-lg hover:bg-(--bg-card) transition-colors text-(--text-secondary)"
             title="Toggle sidebar"
           >
             <svg
@@ -150,10 +150,10 @@ export default function ChatPage() {
               <line x1="3" y1="18" x2="21" y2="18" />
             </svg>
           </button>
-          <h1 className="ml-3 font-semibold text-[var(--text-primary)]">
+          <h1 className="ml-3 font-semibold text-(--text-primary)">
             Kharcha<span className="gradient-text">AI</span>
           </h1>
-          <span className="ml-2 text-xs text-[var(--text-muted)]">
+          <span className="ml-2 text-xs text-(--text-muted)">
             Hardware Cost Estimator
           </span>
         </header>
@@ -163,13 +163,13 @@ export default function ChatPage() {
           {messages.length === 0 ? (
             /* Empty state */
             <div className="h-full flex flex-col items-center justify-center text-center max-w-xl mx-auto">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#6c5ce7] to-[#a78bfa] flex items-center justify-center text-3xl mb-6 animate-float shadow-lg">
+              <div className="w-16 h-16 rounded-2xl bg-linear-to-br from-[#6c5ce7] to-[#a78bfa] flex items-center justify-center text-3xl mb-6 animate-float shadow-lg">
                 💰
               </div>
-              <h2 className="text-2xl font-bold mb-3 text-[var(--text-primary)]">
+              <h2 className="text-2xl font-bold mb-3 text-(--text-primary)">
                 What are you building?
               </h2>
-              <p className="text-[var(--text-secondary)] mb-8 leading-relaxed">
+              <p className="text-(--text-secondary) mb-8 leading-relaxed">
                 Describe your hardware project and I&apos;ll generate a complete
                 Bill of Materials with real-time pricing from DigiKey, Mouser,
                 Amazon, and more.
@@ -187,7 +187,7 @@ export default function ChatPage() {
                       setInput(suggestion);
                       inputRef.current?.focus();
                     }}
-                    className="px-4 py-3 rounded-xl text-sm text-left bg-[var(--bg-card)] border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)] hover:border-[rgba(108,92,231,0.3)] transition-all"
+                    className="px-4 py-3 rounded-xl text-sm text-left bg-(--bg-card) border border-(--border-subtle) text-(--text-secondary) hover:bg-(--bg-card-hover) hover:border-[rgba(108,92,231,0.3)] transition-all"
                   >
                     {suggestion}
                   </button>
@@ -207,16 +207,16 @@ export default function ChatPage() {
                   <div
                     className={`max-w-[85%] ${
                       msg.role === "user"
-                        ? "bg-gradient-to-r from-[#6c5ce7] to-[#7c6cf7] text-white rounded-2xl rounded-br-md px-5 py-3"
-                        : "bg-[var(--bg-card)] border border-[var(--border-subtle)] rounded-2xl rounded-bl-md px-5 py-4"
+                        ? "bg-linear-to-r from-[#6c5ce7] to-[#7c6cf7] text-white rounded-2xl rounded-br-md px-5 py-3"
+                        : "bg-(--bg-card) border border-(--border-subtle) rounded-2xl rounded-bl-md px-5 py-4"
                     }`}
                   >
                     {msg.role === "assistant" && (
-                      <div className="flex items-center gap-2 mb-2 pb-2 border-b border-[var(--border-subtle)]">
-                        <div className="w-6 h-6 rounded-md bg-gradient-to-br from-[#6c5ce7] to-[#a78bfa] flex items-center justify-center text-white text-xs font-bold">
+                      <div className="flex items-center gap-2 mb-2 pb-2 border-b border-(--border-subtle)">
+                        <div className="w-6 h-6 rounded-md bg-linear-to-br from-[#6c5ce7] to-[#a78bfa] flex items-center justify-center text-white text-xs font-bold">
                           K
                         </div>
-                        <span className="text-xs font-medium text-[var(--text-muted)]">
+                        <span className="text-xs font-medium text-(--text-muted)">
                           KharchaAI
                         </span>
                       </div>
@@ -239,31 +239,31 @@ export default function ChatPage() {
               {/* Loading indicator */}
               {loading && (
                 <div className="flex justify-start animate-fade-in">
-                  <div className="bg-[var(--bg-card)] border border-[var(--border-subtle)] rounded-2xl rounded-bl-md px-5 py-4">
+                  <div className="bg-(--bg-card) border border-(--border-subtle) rounded-2xl rounded-bl-md px-5 py-4">
                     <div className="flex items-center gap-2 mb-3">
-                      <div className="w-6 h-6 rounded-md bg-gradient-to-br from-[#6c5ce7] to-[#a78bfa] flex items-center justify-center text-white text-xs font-bold">
+                      <div className="w-6 h-6 rounded-md bg-linear-to-br from-[#6c5ce7] to-[#a78bfa] flex items-center justify-center text-white text-xs font-bold">
                         K
                       </div>
-                      <span className="text-xs font-medium text-[var(--text-muted)]">
+                      <span className="text-xs font-medium text-(--text-muted)">
                         KharchaAI
                       </span>
                     </div>
-                    <div className="flex items-center gap-3 text-sm text-[var(--text-secondary)]">
+                    <div className="flex items-center gap-3 text-sm text-(--text-secondary)">
                       <div className="flex gap-1">
                         <span
-                          className="w-2 h-2 rounded-full bg-[var(--accent-primary)] animate-bounce"
+                          className="w-2 h-2 rounded-full bg-(--accent-primary) animate-bounce"
                           style={{ animationDelay: "0ms" }}
                         />
                         <span
-                          className="w-2 h-2 rounded-full bg-[var(--accent-primary)] animate-bounce"
+                          className="w-2 h-2 rounded-full bg-(--accent-primary) animate-bounce"
                           style={{ animationDelay: "150ms" }}
                         />
                         <span
-                          className="w-2 h-2 rounded-full bg-[var(--accent-primary)] animate-bounce"
+                          className="w-2 h-2 rounded-full bg-(--accent-primary) animate-bounce"
                           style={{ animationDelay: "300ms" }}
                         />
                       </div>
-                      Analyzing project & scraping live prices...
+                      Analyzing project &amp; scraping live prices...
                     </div>
                   </div>
                 </div>
@@ -275,7 +275,7 @@ export default function ChatPage() {
         </div>
 
         {/* Input Area */}
-        <div className="p-4 border-t border-[var(--border-subtle)] bg-[var(--bg-secondary)]">
+        <div className="p-4 border-t border-(--border-subtle) bg-(--bg-secondary)">
           <div className="max-w-4xl mx-auto flex items-end gap-3">
             <div className="flex-1 relative">
               <textarea
@@ -285,7 +285,7 @@ export default function ChatPage() {
                 onKeyDown={handleKeyDown}
                 placeholder="Describe your hardware project..."
                 rows={1}
-                className="w-full px-4 py-3 rounded-xl bg-[var(--bg-input)] border border-[var(--border-subtle)] text-[var(--text-primary)] text-sm placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--border-focus)] focus:ring-1 focus:ring-[rgba(108,92,231,0.3)] resize-none transition-all"
+                className="w-full px-4 py-3 rounded-xl bg-(--bg-input) border border-(--border-subtle) text-(--text-primary) text-sm placeholder:text-(--text-muted) focus:outline-none focus:border-(--border-focus) focus:ring-1 focus:ring-[rgba(108,92,231,0.3)] resize-none transition-all"
                 style={{ minHeight: "48px", maxHeight: "120px" }}
                 onInput={(e) => {
                   const target = e.target as HTMLTextAreaElement;
@@ -297,7 +297,7 @@ export default function ChatPage() {
             <button
               onClick={handleSend}
               disabled={!input.trim() || loading}
-              className="px-5 py-3 rounded-xl bg-gradient-to-r from-[#6c5ce7] to-[#a78bfa] text-white font-semibold text-sm transition-all hover:shadow-lg hover:shadow-[rgba(108,92,231,0.3)] disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 active:scale-95 flex items-center gap-2"
+              className="px-5 py-3 rounded-xl bg-linear-to-r from-[#6c5ce7] to-[#a78bfa] text-white font-semibold text-sm transition-all hover:shadow-lg hover:shadow-[rgba(108,92,231,0.3)] disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 active:scale-95 flex items-center gap-2"
             >
               {loading ? (
                 <>
@@ -342,7 +342,7 @@ export default function ChatPage() {
               )}
             </button>
           </div>
-          <div className="text-center mt-2 text-xs text-[var(--text-muted)]">
+          <div className="text-center mt-2 text-xs text-(--text-muted)">
             Prices are scraped in real-time and may vary. Always verify with the
             supplier.
           </div>

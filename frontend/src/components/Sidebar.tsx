@@ -62,11 +62,11 @@ export default function Sidebar({
   }
 
   return (
-    <aside className="w-72 h-full flex flex-col bg-[var(--bg-secondary)] border-r border-[var(--border-subtle)]">
+    <aside className="w-72 h-full flex flex-col bg-(--bg-secondary) border-r border-(--border-subtle)">
       {/* Header */}
-      <div className="p-4 border-b border-[var(--border-subtle)]">
+      <div className="p-4 border-b border-(--border-subtle)">
         <Link href="/" className="flex items-center gap-2 mb-4">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#6c5ce7] to-[#a78bfa] flex items-center justify-center text-white font-bold text-sm">
+          <div className="w-8 h-8 rounded-lg bg-linear-to-br from-[#6c5ce7] to-[#a78bfa] flex items-center justify-center text-white font-bold text-sm">
             K
           </div>
           <span className="text-lg font-bold">
@@ -75,7 +75,7 @@ export default function Sidebar({
         </Link>
         <button
           onClick={onNewChat}
-          className="w-full px-4 py-2.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] text-sm font-medium text-[var(--text-primary)] hover:bg-[var(--bg-card-hover)] hover:border-[rgba(108,92,231,0.3)] transition-all flex items-center justify-center gap-2"
+          className="w-full px-4 py-2.5 rounded-xl border border-(--border-subtle) bg-(--bg-card) text-sm font-medium text-(--text-primary) hover:bg-(--bg-card-hover) hover:border-[rgba(108,92,231,0.3)] transition-all flex items-center justify-center gap-2"
         >
           <svg
             width="16"
@@ -103,7 +103,7 @@ export default function Sidebar({
             ))}
           </div>
         ) : conversations.length === 0 ? (
-          <div className="p-4 text-center text-sm text-[var(--text-muted)]">
+          <div className="p-4 text-center text-sm text-(--text-muted)">
             No conversations yet.
             <br />
             Start by describing your project!
@@ -117,20 +117,20 @@ export default function Sidebar({
                 className={`group flex items-center justify-between px-3 py-3 rounded-xl cursor-pointer transition-all text-sm ${
                   currentConversationId === conv.id
                     ? "bg-[rgba(108,92,231,0.15)] border border-[rgba(108,92,231,0.3)]"
-                    : "hover:bg-[var(--bg-card)] border border-transparent"
+                    : "hover:bg-(--bg-card) border border-transparent"
                 }`}
               >
                 <div className="flex-1 min-w-0">
-                  <div className="truncate font-medium text-[var(--text-primary)]">
+                  <div className="truncate font-medium text-(--text-primary)">
                     {conv.title}
                   </div>
-                  <div className="text-xs text-[var(--text-muted)] mt-0.5">
+                  <div className="text-xs text-(--text-muted) mt-0.5">
                     {formatDate(conv.updated_at)}
                   </div>
                 </div>
                 <button
                   onClick={(e) => handleDelete(conv.id, e)}
-                  className="opacity-0 group-hover:opacity-100 p-1 rounded-lg hover:bg-[rgba(239,68,68,0.15)] text-[var(--text-muted)] hover:text-[var(--error)] transition-all"
+                  className="opacity-0 group-hover:opacity-100 p-1 rounded-lg hover:bg-[rgba(239,68,68,0.15)] text-(--text-muted) hover:text-(--error) transition-all"
                   title="Delete"
                 >
                   <svg
@@ -156,7 +156,7 @@ export default function Sidebar({
       </div>
 
       {/* Footer */}
-      <div className="p-4 border-t border-[var(--border-subtle)] text-xs text-[var(--text-muted)] text-center">
+      <div className="p-4 border-t border-(--border-subtle) text-xs text-(--text-muted) text-center">
         Prices scraped in real-time
       </div>
     </aside>
