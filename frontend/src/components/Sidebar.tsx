@@ -33,7 +33,7 @@ export default function Sidebar({
       const data = await getConversations();
       setConversations(data);
     } catch {
-      // API not yet available, that's okay
+      // API not yet available
     } finally {
       setLoading(false);
     }
@@ -62,92 +62,124 @@ export default function Sidebar({
   }
 
   return (
-    <aside className="w-72 h-full flex flex-col bg-(--bg-secondary) border-r border-(--border-subtle)">
+    <aside
+      style={{
+        width: "280px",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        background: "var(--bg-secondary)",
+        borderRight: "1px solid var(--border-subtle)",
+        flexShrink: 0,
+      }}
+    >
       {/* Header */}
-      <div className="p-4 border-b border-(--border-subtle)">
-        <Link href="/" className="flex items-center gap-2 mb-4">
-          <div className="w-8 h-8 rounded-lg bg-linear-to-br from-[#6c5ce7] to-[#a78bfa] flex items-center justify-center text-white font-bold text-sm">
+      <div style={{ padding: "1rem", borderBottom: "1px solid var(--border-subtle)" }}>
+        <Link href="/" style={{ display: "flex", alignItems: "center", gap: "0.6rem", marginBottom: "1rem", textDecoration: "none" }}>
+          <div style={{ width: "32px", height: "32px", borderRadius: "8px", background: "linear-gradient(135deg, #6c5ce7, #a78bfa)", display: "flex", alignItems: "center", justifyContent: "center", color: "white", fontWeight: 700, fontSize: "0.8rem" }}>
             K
           </div>
-          <span className="text-lg font-bold">
+          <span style={{ fontSize: "1.1rem", fontWeight: 700, color: "var(--text-primary)" }}>
             Kharcha<span className="gradient-text">AI</span>
           </span>
         </Link>
         <button
           onClick={onNewChat}
-          className="w-full px-4 py-2.5 rounded-xl border border-(--border-subtle) bg-(--bg-card) text-sm font-medium text-(--text-primary) hover:bg-(--bg-card-hover) hover:border-[rgba(108,92,231,0.3)] transition-all flex items-center justify-center gap-2"
+          style={{
+            width: "100%",
+            padding: "0.6rem 1rem",
+            borderRadius: "10px",
+            border: "1px solid var(--border-subtle)",
+            background: "var(--bg-card)",
+            color: "var(--text-primary)",
+            fontSize: "0.875rem",
+            fontWeight: 500,
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "0.5rem",
+            transition: "all 0.2s ease",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "var(--bg-card-hover)";
+            e.currentTarget.style.borderColor = "rgba(108,92,231,0.3)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "var(--bg-card)";
+            e.currentTarget.style.borderColor = "var(--border-subtle)";
+          }}
         >
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <line x1="12" y1="5" x2="12" y2="19" />
-            <line x1="5" y1="12" x2="19" y2="12" />
-          </svg>
-          New Estimation
+          + New Estimation
         </button>
       </div>
 
-      {/* Conversations List */}
-      <div className="flex-1 overflow-y-auto p-2">
+      {/* List */}
+      <div style={{ flex: 1, overflowY: "auto", padding: "0.5rem" }}>
         {loading ? (
-          <div className="space-y-3 p-2">
+          <div style={{ padding: "0.5rem" }}>
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-14 rounded-lg animate-shimmer" />
+              <div key={i} className="animate-shimmer" style={{ height: "56px", borderRadius: "8px", marginBottom: "0.5rem" }} />
             ))}
           </div>
         ) : conversations.length === 0 ? (
-          <div className="p-4 text-center text-sm text-(--text-muted)">
-            No conversations yet.
-            <br />
-            Start by describing your project!
+          <div style={{ padding: "1.5rem 1rem", textAlign: "center", fontSize: "0.85rem", color: "var(--text-muted)", lineHeight: 1.6 }}>
+            No conversations yet.<br />Start by describing your project!
           </div>
         ) : (
-          <div className="space-y-1">
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
             {conversations.map((conv) => (
               <div
                 key={conv.id}
                 onClick={() => onSelectConversation(conv.id)}
-                className={`group flex items-center justify-between px-3 py-3 rounded-xl cursor-pointer transition-all text-sm ${
-                  currentConversationId === conv.id
-                    ? "bg-[rgba(108,92,231,0.15)] border border-[rgba(108,92,231,0.3)]"
-                    : "hover:bg-(--bg-card) border border-transparent"
-                }`}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  padding: "0.75rem",
+                  borderRadius: "10px",
+                  cursor: "pointer",
+                  fontSize: "0.85rem",
+                  background: currentConversationId === conv.id ? "rgba(108,92,231,0.15)" : "transparent",
+                  border: currentConversationId === conv.id ? "1px solid rgba(108,92,231,0.3)" : "1px solid transparent",
+                  transition: "all 0.2s ease",
+                }}
+                onMouseEnter={(e) => {
+                  if (currentConversationId !== conv.id) {
+                    e.currentTarget.style.background = "var(--bg-card)";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (currentConversationId !== conv.id) {
+                    e.currentTarget.style.background = "transparent";
+                  }
+                }}
               >
-                <div className="flex-1 min-w-0">
-                  <div className="truncate font-medium text-(--text-primary)">
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontWeight: 500, color: "var(--text-primary)" }}>
                     {conv.title}
                   </div>
-                  <div className="text-xs text-(--text-muted) mt-0.5">
+                  <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "0.25rem" }}>
                     {formatDate(conv.updated_at)}
                   </div>
                 </div>
                 <button
                   onClick={(e) => handleDelete(conv.id, e)}
-                  className="opacity-0 group-hover:opacity-100 p-1 rounded-lg hover:bg-[rgba(239,68,68,0.15)] text-(--text-muted) hover:text-(--error) transition-all"
+                  style={{
+                    padding: "0.3rem",
+                    borderRadius: "6px",
+                    background: "none",
+                    border: "none",
+                    color: "var(--text-muted)",
+                    cursor: "pointer",
+                    opacity: 0.3,
+                    transition: "opacity 0.2s",
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.opacity = "1"; e.currentTarget.style.color = "var(--error)"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.opacity = "0.3"; e.currentTarget.style.color = "var(--text-muted)"; }}
                   title="Delete"
                 >
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <polyline points="3 6 5 6 21 6" />
-                    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-                    <path d="M10 11v6" />
-                    <path d="M14 11v6" />
-                  </svg>
+                  ✕
                 </button>
               </div>
             ))}
@@ -156,7 +188,7 @@ export default function Sidebar({
       </div>
 
       {/* Footer */}
-      <div className="p-4 border-t border-(--border-subtle) text-xs text-(--text-muted) text-center">
+      <div style={{ padding: "1rem", borderTop: "1px solid var(--border-subtle)", textAlign: "center", fontSize: "0.75rem", color: "var(--text-muted)" }}>
         Prices scraped in real-time
       </div>
     </aside>
