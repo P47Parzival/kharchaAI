@@ -44,10 +44,17 @@ export interface BOMData {
   additional_notes?: string;
 }
 
+export interface AgentStep {
+  step: string;
+  status: string;
+  detail: string;
+}
+
 export interface ChatResponse {
   conversation_id: string;
   response: string;
   bom: BOMData | null;
+  steps: AgentStep[];
   status: string;
 }
 

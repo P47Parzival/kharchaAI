@@ -1,13 +1,12 @@
 """
-KharchaAI — Price Extractor using chrome-devtools-mcp
-Navigates supplier websites in headless Chrome and extracts pricing data.
-Falls back to LLM-based extraction when structured parsing fails.
+KharchaAI — Price Extractor
+Three-tier strategy: (1) MCP headless Chrome → (2) httpx fallback → (3) LLM estimation
 """
 import asyncio
-import subprocess
-import json
 import logging
+import httpx
 from app.scraper.sites import SITE_CONFIGS, get_search_url, get_all_sites
+from app.scraper.mcp_client import mcp_browser
 from app.services.llm import llm_service
 from app.config import get_settings
 
@@ -19,36 +18,25 @@ class PriceExtractor:
     """
     Extracts real-time prices from supplier websites.
 
-    Strategy:
-    1. For each component, try multiple supplier sites
-    2. Navigate to the site's search page using chrome-devtools-mcp (headless)
-    3. Extract the page content
-    4. Use LLM to parse prices from the page text (more reliable than CSS selectors)
-    5. Return structured price data
-
-    The chrome-devtools-mcp runs Chrome in HEADLESS mode — no visible browser window.
+    Strategy per component:
+    1. Try MCP (headless Chrome) — handles JS-rendered pages, bot protection
+    2. Fall back to httpx — works for simpler/static pages
+    3. Pass extracted content to LLM for structured price parsing
     """
 
-    def __init__(self):
-        self._mcp_process = None
-        self._connected = False
-
-    async def search_component(self, component: dict) -> list[dict]:
+    async def search_component(
+        self, component: dict, step_callback=None
+    ) -> list[dict]:
         """
-        Search for a component across multiple supplier sites.
-
+        Search for a component across supplier sites.
+        
         Args:
-            component: Dict with 'name', 'search_keywords', etc.
-
-        Returns:
-            List of price results from different sources.
+            component: Dict with name, search_keywords, etc.
+            step_callback: Optional async callback for reporting progress
         """
         results = []
         keywords = component.get("search_keywords", [component["name"]])
-
-        # Use the primary keyword for searching
         search_term = keywords[0] if keywords else component["name"]
-
         sites = get_all_sites()
         max_sources = settings.max_sources_per_component
 
@@ -56,36 +44,82 @@ class PriceExtractor:
             if len(results) >= max_sources:
                 break
 
+            site_name = SITE_CONFIGS[site_key]["name"]
+
+            if step_callback:
+                await step_callback(
+                    f"Searching {site_name} for {component['name']}..."
+                )
+
             try:
                 result = await self._scrape_site(site_key, search_term, component["name"])
                 if result and result.get("found"):
                     results.append({
-                        "source_site": site_key,
+                        "source_site": site_name,
                         "source_url": result.get("source_url", ""),
                         "price": result.get("price"),
                         "currency": result.get("currency", SITE_CONFIGS[site_key]["currency"]),
                         "product_name": result.get("product_name", ""),
-                        "in_stock": result.get("in_stock", None),
+                        "in_stock": result.get("in_stock"),
+                        "scraped": True,
                     })
+
+                    if step_callback:
+                        price = result.get("price", 0)
+                        currency = result.get("currency", "USD")
+                        symbol = "₹" if currency == "INR" else "$"
+                        await step_callback(
+                            f"Found {component['name']} at {symbol}{price:.2f} on {site_name}"
+                        )
             except Exception as e:
                 logger.warning(f"Failed to scrape {site_key} for {search_term}: {e}")
-                continue
 
         return results
 
     async def _scrape_site(self, site_key: str, search_term: str, component_name: str) -> dict | None:
         """
         Scrape pricing from a single supplier site.
-
-        Uses httpx as a lightweight first attempt, falls back to
-        chrome-devtools-mcp for JavaScript-heavy sites.
+        Tries MCP first, then falls back to httpx.
         """
-        import httpx
-
         url = get_search_url(site_key, search_term)
 
+        # ── Strategy 1: MCP headless Chrome ──
+        page_text = await self._try_mcp_scrape(url, site_key)
+
+        # ── Strategy 2: httpx fallback ──
+        if not page_text or len(page_text) < 200:
+            page_text = await self._try_httpx_scrape(url, site_key)
+
+        # ── Parse with LLM ──
+        if page_text and len(page_text) > 200:
+            result = await llm_service.extract_price_from_text(
+                component_name, page_text
+            )
+            if result and result.get("found"):
+                result["source_url"] = str(url)
+                return result
+
+        return None
+
+    async def _try_mcp_scrape(self, url: str, site_key: str) -> str:
+        """Try to scrape using MCP headless Chrome."""
         try:
-            # First try: simple HTTP request (fast, works for many sites)
+            if not mcp_browser.is_connected:
+                await mcp_browser.connect()
+
+            page_text = await mcp_browser.scrape_url(url, wait_ms=4000)
+            if page_text and len(page_text) > 200:
+                logger.info(f"MCP scrape success for {site_key}: {len(page_text)} chars")
+                return page_text
+
+        except Exception as e:
+            logger.info(f"MCP scrape failed for {site_key}: {e}")
+
+        return ""
+
+    async def _try_httpx_scrape(self, url: str, site_key: str) -> str:
+        """Try to scrape using simple HTTP request."""
+        try:
             async with httpx.AsyncClient(
                 timeout=settings.scraper_timeout_seconds,
                 follow_redirects=True,
@@ -97,38 +131,24 @@ class PriceExtractor:
             ) as client:
                 response = await client.get(url)
                 if response.status_code == 200:
-                    page_text = response.text
-
-                    # Strip HTML to get text content (basic approach)
-                    page_text = self._html_to_text(page_text)
-
-                    if len(page_text) > 200:  # Got meaningful content
-                        result = await llm_service.extract_price_from_text(
-                            component_name, page_text
-                        )
-                        if result:
-                            result["source_url"] = str(url)
-                        return result
+                    page_text = self._html_to_text(response.text)
+                    if len(page_text) > 200:
+                        logger.info(f"httpx scrape success for {site_key}: {len(page_text)} chars")
+                        return page_text
 
         except Exception as e:
-            logger.info(f"HTTP scrape failed for {site_key}, will try MCP: {e}")
+            logger.info(f"httpx scrape failed for {site_key}: {e}")
 
-        # Fallback: Use chrome-devtools-mcp for JS-rendered pages
-        # This will be enhanced when MCP integration is fully wired
-        return None
+        return ""
 
     def _html_to_text(self, html: str) -> str:
-        """Very basic HTML to text conversion. Strips tags and excessive whitespace."""
+        """Basic HTML to text conversion."""
         import re
-        # Remove script and style blocks
         text = re.sub(r"<script[^>]*>.*?</script>", "", html, flags=re.DOTALL | re.IGNORECASE)
         text = re.sub(r"<style[^>]*>.*?</style>", "", text, flags=re.DOTALL | re.IGNORECASE)
-        # Remove HTML tags
         text = re.sub(r"<[^>]+>", " ", text)
-        # Clean up whitespace
         text = re.sub(r"\s+", " ", text)
-        # Limit length
-        return text[:10000].strip()
+        return text[:12000].strip()
 
 
 # Singleton

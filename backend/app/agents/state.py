@@ -1,8 +1,7 @@
 """
 KharchaAI Agent State Schema
 """
-from typing import TypedDict, Annotated
-from langgraph.graph.message import add_messages
+from typing import TypedDict
 
 
 class AgentState(TypedDict):
@@ -11,20 +10,29 @@ class AgentState(TypedDict):
     # User input
     user_query: str
     conversation_id: str
+    conversation_history: list[dict]  # Prior messages for context
+
+    # Understanding & confirmation
+    needs_confirmation: bool  # Does the LLM need to ask the user something?
+    confirmed: bool  # Has the user confirmed the BOM?
+    clarification_response: str  # LLM's clarification or confirmation message
 
     # BOM from LLM reasoning
     bom: dict | None  # Structured BOM with components list
 
     # Price data
-    prices: dict  # {component_name: {source: price_data}}
-    cache_hits: list[str]  # Component names found in cache
-    cache_misses: list[str]  # Component names needing scraping
+    prices: dict  # {component_name: [price_entries]}
+    cache_hits: list[str]
+    cache_misses: list[str]
 
     # Scraping results
-    scrape_results: list[dict]  # Raw scrape results
+    scrape_results: list[dict]
+
+    # Agent steps — visible to the user
+    steps: list[dict]  # [{step: str, status: str, detail: str}]
 
     # Final output
-    aggregated_bom: dict | None  # BOM with aggregated prices
-    response_text: str  # Final formatted response
-    error: str | None  # Any error message
-    status: str  # Current pipeline status
+    aggregated_bom: dict | None
+    response_text: str
+    error: str | None
+    status: str  # pipeline status
